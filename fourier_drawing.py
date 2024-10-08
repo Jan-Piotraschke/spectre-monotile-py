@@ -30,6 +30,12 @@ parser.add_argument(
     default=0.5,
     help="Strength of the curve (default: 0.5)",
 )
+parser.add_argument(
+    "--save",
+    type=bool,
+    default=False,
+    help="Save the animation as a video file (default: False)",
+)
 
 args = parser.parse_args()
 
@@ -164,11 +170,10 @@ def update(frame):
 # Create the animation
 ani = FuncAnimation(fig, update, frames=N, init_func=init, blit=True, interval=20)
 
-# # Calculate fps for 10-second animation
-# fps = N / 10
-
-# # Save the animation as a video file (MP4 format)
-# ani.save("fourier_epicycles.mp4", writer="ffmpeg", fps=fps)
-
-# Show the animation
-plt.show()
+if args.save:
+    # Calculate fps for 10-second animation
+    fps = N / 10
+    ani.save("fourier_epicycles.mp4", writer="ffmpeg", fps=fps)
+else:
+    # Show the animation
+    plt.show()
