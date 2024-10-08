@@ -4,19 +4,13 @@ The Spectre Monotile project provides a simple Python tool to visualize a geomet
 
 ## Requirements
 
-- Python 3
-- NumPy
-- Matplotlib
-- Bezier  
-
-These dependencies can usually be installed using `pip`:
+The dependencies can usually be installed using `pip`:
 
 ```pip install numpy matplotlib opencv-python bezier```
 
 ## Usage
 
 To use the Spectre Monotile tool, navigate to the project directory and run:
-
 
 ```python3 spectre.py <a> <b> <curve_value>```  
 Replace `<a>`, `<b>`, and `<curve_value>` with your desired values.
@@ -45,3 +39,5 @@ To use the Spectre Monotile shape (default parameters):
 
 To specify parameters for the Spectre Monotile:  
 ```python fourier_drawing.py --a 1 --b 1 --curve_strength 0.5 --num_components 50```
+
+![fourier_drawing](https://github.com/user-attachments/assets/849d0357-0caa-4a70-b838-bb69ca33907a)
