@@ -69,7 +69,7 @@ ax.axis("off")
 circles = []  # List to keep track of drawn circles
 
 # Number of Fourier components to include
-num_components = 100  # Adjust this number as needed
+num_components = 180
 
 
 # Initialize the animation
@@ -128,5 +128,11 @@ def update(frame):
 
 # Create the animation
 ani = FuncAnimation(fig, update, frames=N, init_func=init, blit=True, interval=20)
+
+# # Calculate fps for 10-second animation
+# fps = N / 10
+
+# # Save the animation as a video file (MP4 format)
+# ani.save("fourier_epicycles.mp4", writer="ffmpeg", fps=fps)
 
 plt.show()
