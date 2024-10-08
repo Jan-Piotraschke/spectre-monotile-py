@@ -25,9 +25,11 @@ For example, to draw a spectre tile with parameters a=1, b=1, and curve_value=0.
 
 ```python3 spectre.py 1 1 0.5```
 
+
+![spectre_monotile](https://github.com/Jan-Piotraschke/spectre-monotile-py/assets/78916218/706cfb54-81a1-43da-b587-6c6afe15ee08)
+
 ## Getting Help
 
 To view a help message and learn about the available parameters and options, use:
 
 ```python3 spectre.py --help```
-
