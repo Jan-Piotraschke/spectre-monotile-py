@@ -1,46 +1,69 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-import cv2
 import argparse
+import cv2
+import sys
+
+import spectre
 
 # Set up argument parser
 parser = argparse.ArgumentParser(description="Fourier Epicycles Animation")
-parser.add_argument("image_path", type=str, help="Path to the input image")
+parser.add_argument(
+    "image_path", nargs="?", default=None, help="Path to the input image (optional)"
+)
 parser.add_argument(
     "--num_components",
     type=int,
     default=180,
     help="Number of Fourier components to include (default: 180)",
 )
+parser.add_argument(
+    "--a", type=float, default=1.0, help="Value for parameter a (default: 1.0)"
+)
+parser.add_argument(
+    "--b", type=float, default=1.0, help="Value for parameter b (default: 1.0)"
+)
+parser.add_argument(
+    "--curve_strength",
+    type=float,
+    default=0.5,
+    help="Strength of the curve (default: 0.5)",
+)
 
 args = parser.parse_args()
 
-# Load and preprocess the image
-img = cv2.imread(args.image_path, cv2.IMREAD_GRAYSCALE)
-if img is None:
-    raise FileNotFoundError("Image not found. Please check the file path.")
+if args.image_path:
+    # If image path is provided, process the image
+    img = cv2.imread(args.image_path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        print(f"Error: Image not found at {args.image_path}")
+        sys.exit(1)
 
-# Threshold the image to get a binary image
-_, thresh = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
+    # Threshold the image to get a binary image
+    _, thresh = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
 
-# Find contours in the image
-contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    # Find contours in the image
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
-# Check if any contour is found
-if not contours:
-    raise ValueError("No contours found in the image.")
+    # Check if any contour is found
+    if not contours:
+        print("Error: No contours found in the image.")
+        sys.exit(1)
 
-# Assuming the largest contour is the desired shape
-contour = max(contours, key=cv2.contourArea)
+    # Assuming the largest contour is the desired shape
+    contour = max(contours, key=cv2.contourArea)
 
-# Reshape and extract contour points
-contour = contour.reshape(-1, 2)
-x_points = contour[:, 0]
-y_points = contour[:, 1]
+    # Reshape and extract contour points
+    contour = contour.reshape(-1, 2)
+    x_points = contour[:, 0]
+    y_points = contour[:, 1]
 
-# Invert y-coordinates to match Matplotlib's coordinate system
-y_points = -y_points
+    # Invert y-coordinates to match Matplotlib's coordinate system
+    y_points = -y_points
+else:
+    # If no image path is provided, generate the Spectre Monotile shape
+    x_points, y_points = spectre.generate_monotile(args.a, args.b, args.curve_strength)
 
 # Normalize points to range [-1, 1] for better visualization
 x_points = (x_points - np.mean(x_points)) / np.max(np.abs(x_points - np.mean(x_points)))
@@ -146,7 +169,6 @@ ani = FuncAnimation(fig, update, frames=N, init_func=init, blit=True, interval=2
 
 # # Save the animation as a video file (MP4 format)
 # ani.save("fourier_epicycles.mp4", writer="ffmpeg", fps=fps)
-
 
 # Show the animation
 plt.show()
