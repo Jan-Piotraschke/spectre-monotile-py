@@ -2,10 +2,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import cv2
+import argparse
+
+# Set up argument parser
+parser = argparse.ArgumentParser(description="Fourier Epicycles Animation")
+parser.add_argument("image_path", type=str, help="Path to the input image")
+parser.add_argument(
+    "--num_components",
+    type=int,
+    default=180,
+    help="Number of Fourier components to include (default: 180)",
+)
+
+args = parser.parse_args()
 
 # Load and preprocess the image
-# Replace 'your_image.png' with the path to your image file
-img = cv2.imread("your_image.png", cv2.IMREAD_GRAYSCALE)
+img = cv2.imread(args.image_path, cv2.IMREAD_GRAYSCALE)
 if img is None:
     raise FileNotFoundError("Image not found. Please check the file path.")
 
@@ -40,6 +52,9 @@ points = x_points + 1j * y_points
 # Number of samples along the contour path
 N = len(points)
 
+# Number of Fourier components to include
+num_components = min(args.num_components, N)
+
 # Compute the Fourier coefficients
 coefficients = np.fft.fft(points) / N
 
@@ -67,9 +82,6 @@ ax.axis("off")
 (line,) = ax.plot([], [], "b-")  # Line representing the epicycles
 (path_line,) = ax.plot([], [], "r-")  # Line representing the drawn path
 circles = []  # List to keep track of drawn circles
-
-# Number of Fourier components to include
-num_components = 180
 
 
 # Initialize the animation
@@ -135,4 +147,6 @@ ani = FuncAnimation(fig, update, frames=N, init_func=init, blit=True, interval=2
 # # Save the animation as a video file (MP4 format)
 # ani.save("fourier_epicycles.mp4", writer="ffmpeg", fps=fps)
 
+
+# Show the animation
 plt.show()
